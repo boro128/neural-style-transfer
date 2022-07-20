@@ -12,6 +12,12 @@ class Vgg19(nn.Module):
         pretrained_features = models.vgg19(
             weights=models.VGG19_Weights.IMAGENET1K_V1).features
 
+        self.layers_names = ['conv1_1', 'conv2_1',
+                             'conv3_1', 'conv4_1', 'conv4_2', 'conv5_1']
+        self.content_feature_maps_idx = 4
+        self.style_feature_maps_indices = list(range(len(self.layers_names)))
+        self.style_feature_maps_indices.remove(self.content_feature_maps_idx)
+
         # replace MaxPool layers with AvgPool as suggested in the paper
         for i, layer in pretrained_features.named_children():
             if isinstance(layer, nn.MaxPool2d):
@@ -52,6 +58,5 @@ class Vgg19(nn.Module):
         conv4_2 = self.block(conv4_1)
         conv5_1 = self.block(conv4_2)
 
-        outputs = namedtuple(
-            'Outputs', ['conv1_1', 'conv2_1', 'conv3_1', 'conv4_1', 'conv4_2', 'conv5_1'])
+        outputs = namedtuple('Outputs', self.layers_names)
         return outputs(conv1_1, conv2_1, conv3_1, conv4_1, conv4_2, conv5_1)
