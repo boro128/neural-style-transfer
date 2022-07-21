@@ -1,9 +1,12 @@
+import torch
 import torchvision
+
+from pathlib import Path
 
 # values below come from:
 # https://pytorch.org/vision/main/models/generated/torchvision.models.vgg19.html
-IMAGENET1K_V1_MEAN = [0.485, 0.456, 0.406]
-IMAGENET1K_V1_STD = [0.229, 0.224, 0.225]
+IMAGENET1K_V1_MEAN = torch.tensor([0.485, 0.456, 0.406])
+IMAGENET1K_V1_STD = torch.tensor([0.229, 0.224, 0.225])
 
 
 def load_img(path, height=None, width=None):
@@ -29,5 +32,8 @@ def save_img(img, path):
     ])
 
     img = transform(img)
+
+    # create dir if not exists
+    Path(path).parent.mkdir(parents=True, exist_ok=True)
 
     torchvision.utils.save_image(img, path)
