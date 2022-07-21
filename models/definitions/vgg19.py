@@ -52,11 +52,11 @@ class Vgg19(nn.Module):
 
     def forward(self, x):
         conv1_1 = self.block1(x)
-        conv2_1 = self.block(conv1_1)
-        conv3_1 = self.block(conv2_1)
-        conv4_1 = self.block(conv3_1)
-        conv4_2 = self.block(conv4_1)
-        conv5_1 = self.block(conv4_2)
+        conv2_1 = self.block2(conv1_1)
+        conv3_1 = self.block3(conv2_1)
+        conv4_1 = self.block4(conv3_1)
+        conv4_2 = self.block5(conv4_1)
+        conv5_1 = self.block6(conv4_2)
 
         outputs = namedtuple('Outputs', self.layers_names)
         return outputs(conv1_1, conv2_1, conv3_1, conv4_1, conv4_2, conv5_1)
