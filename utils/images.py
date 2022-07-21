@@ -37,3 +37,23 @@ def save_img(img, path):
     Path(path).parent.mkdir(parents=True, exist_ok=True)
 
     torchvision.utils.save_image(img, path)
+
+
+def load_resize_save_img(path, new_height, new_width=None):
+    img = torchvision.io.read_image(path)
+    img = img.float()
+
+    if new_width is None:
+        _, old_height, old_width = img.shape
+        new_width = old_width * new_height / old_height
+
+    transform = torchvision.transforms.Compose([
+        torchvision.transforms.Resize((new_height, new_width)),
+        torchvision.transforms.Normalize(0, 255),  # scaling to [0.0, 1.0]
+    ])
+    img = transform(img)
+
+    path_obj = Path(path)
+    new_img_path = f"{path_obj.parent}/{path_obj.stem}_{new_height}p{path_obj.suffix}"
+
+    torchvision.utils.save_image(img, new_img_path)
