@@ -29,8 +29,9 @@ def get_loss_func(content_feature_maps_idx, style_feature_maps_indices, alpha, b
         total_loss = alpha*content_loss + beta*style_loss
 
         return total_loss, content_loss, style_loss
-        
+
     return loss
+
 
 def gramm_matrix(x):
     channel_num, height, width = x.shape
