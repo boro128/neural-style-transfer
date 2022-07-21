@@ -7,7 +7,8 @@ def get_loss_func(content_feature_maps, style_feature_maps,
                   content_feature_maps_idx, style_feature_maps_indices,
                   alpha, beta):
 
-    style_gramm_matrices = [gramm_matrix(x) for i, x in enumerate(style_feature_maps) if i in style_feature_maps_indices]
+    style_gramm_matrices = [gramm_matrix(x) for i, x in enumerate(
+        style_feature_maps) if i in style_feature_maps_indices]
 
     # keep in mind that this function could be more optimal,
     # however in this form it is easier to follow along with the paper
