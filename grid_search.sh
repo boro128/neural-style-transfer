@@ -29,8 +29,10 @@ save_freq=100
 
 # change values below to adjust search space
 lrs=(0.01 0.1)
-alphas=(0.1 1)
-betas=(10000000 100000000 1000000000)
+alphas=(0.1)
+betas=(8000000 7000000 6000000 5000000 4000000 30000000)
+
+save_dir_prefix=nst/grid_search_`date +%Y-%m-%d_%H-%M`
 
 for lr in ${lrs[@]}
 do
@@ -44,7 +46,7 @@ do
             --height $height --width $width \
             --save-freq $save_freq \
             --lr $lr --alpha $alpha --beta $beta \
-            --save-dir nst/grid_search_`date +%Y-%m-%d`/lr_${lr}_alpha_${alpha}_beta_${beta}
+            --save-dir ${save_dir_prefix}/lr_${lr}_alpha_${alpha}_beta_${beta}
         done
     done
 done
