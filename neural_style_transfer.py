@@ -1,5 +1,4 @@
 import argparse
-from posixpath import basename, split
 import torch
 import time
 
@@ -70,13 +69,15 @@ def main():
     parser.add_argument('--start-img',
                         choices=['random', 'style', 'content'],
                         default='random')
-    parser.add_argument('--alpha', default=1e3, type=float)
-    parser.add_argument('--beta', default=1e5, type=float)
+    parser.add_argument('--alpha', default=1e1, type=float)
+    parser.add_argument('--beta', default=1e10, type=float)
     parser.add_argument('--lr', default=1e-1, type=float)
     parser.add_argument('--epochs-num', default=3000, type=int)
     parser.add_argument('--device', choices=['cpu', 'cuda'])
     parser.add_argument('--save-freq', type=int)
     parser.add_argument('--save-dir', type=str)
+    # according to my experience the generated image is better when below option is passed
+    parser.add_argument('--resize-style-img', action='store_true')
 
     args = parser.parse_args()
 
@@ -85,6 +86,9 @@ def main():
     height = args.height
     width = args.width
     start_img = args.start_img
+    resize_style_img = args.resize_style_img
+
+    default_save_dir = f"nst/{start_img}_h_{height}_w_{width}_lr_{args.lr}_a_{args.alpha}_b_{args.beta}/{int(time.time())}"
 
     config = {
         'alpha': args.alpha,
@@ -93,25 +97,26 @@ def main():
         'epochs_num': args.epochs_num,
         'device': args.device,
         'save_freq': args.save_freq,
-        'save_dir': args.save_dir if args.save_dir is not None else f"nst__{int(time.time())}",
-        'base_filename': Path(content_img_path).stem + '_' + Path(style_img_path).stem
+        'save_dir': args.save_dir if args.save_dir is not None else default_save_dir,
+        'base_filename': f"{Path(content_img_path).stem}_{Path(style_img_path).stem}"
     }
 
     content_img = load_img(content_img_path, height, width)
-
-    # if height or width is not provided, the content image dimensions are used
-    if height is None or width is None:
-        height, width = content_img.shape[1:]
-
-    style_img = load_img(style_img_path, height, width)
+    if resize_style_img:
+        _, content_img_height, content_img_width = content_img.shape
+        style_img = load_img(
+            style_img_path, content_img_height, content_img_width)
+    else:
+        style_img = load_img(style_img_path)
 
     # the paper used random initialization
     if start_img == 'random':
         target_img = torch.randn_like(content_img)
     elif start_img == 'content':
-        target_img = torch.tensor(content_img)
+        target_img = content_img.clone().detach()
     elif start_img == 'style':
-        target_img = torch.tensor(style_img)
+        # currently only works if resize-content-img option is passed
+        target_img = style_img.clone().detach()
 
     neural_style_transfer(target_img, style_img, content_img, config)
 
