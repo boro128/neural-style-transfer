@@ -46,7 +46,8 @@ do
             --height $height --width $width \
             --save-freq $save_freq \
             --lr $lr --alpha $alpha --beta $beta \
-            --save-dir ${save_dir_prefix}/lr_${lr}_alpha_${alpha}_beta_${beta}
+            --save-dir ${save_dir_prefix}/lr_${lr}_alpha_${alpha}_beta_${beta} \
+            --resize-style-img
         done
     done
 done
