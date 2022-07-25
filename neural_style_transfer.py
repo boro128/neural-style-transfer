@@ -76,7 +76,7 @@ def main():
     parser.add_argument('--device', choices=['cpu', 'cuda'])
     parser.add_argument('--save-freq', type=int)
     parser.add_argument('--save-dir', type=str)
-    # according to my experience the generated image is better when below option is passed
+    # according to my experience the generated image is better when the below option is passed
     parser.add_argument('--resize-style-img', action='store_true')
 
     args = parser.parse_args()
@@ -115,8 +115,10 @@ def main():
     elif start_img == 'content':
         target_img = content_img.clone().detach()
     elif start_img == 'style':
-        # currently only works if resize-content-img option is passed
-        target_img = style_img.clone().detach()
+        _, content_img_height, content_img_width = content_img.shape
+        target_img = load_img(
+            style_img_path, content_img_height, content_img_width)
+        target_img = target_img.clone().detach()
 
     neural_style_transfer(target_img, style_img, content_img, config)
 
