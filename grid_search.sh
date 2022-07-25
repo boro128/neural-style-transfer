@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Example usage:
-# ./grid_search.sh images/style/The_Starry_Night_Van_Gogh_240p.jpg images/Tuebingen_Neckarfront.jpg
+# ./grid_search.sh images/style/The_Starry_Night_van_Gogh_240p.jpg images/Tuebingen_Neckarfront.jpg
 
 if [ -z $1 ]
 then
